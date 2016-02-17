@@ -9,13 +9,13 @@
 	</div>
 
   <!-- display the user's name by accessing the user object embedded in the post -->
-  <small>Posted by: {{post.author.username }} </small>
+  <small>Posted by: {{post._author.username }} </small>
 
 
   <!-- display the post body -->
 	<p> {{ post.body }} </p>
 
-		<button type="button" class="btn btn-primary">Edit</button>
+		<button type="button" class="btn btn-primary" ng-click="edit()">Edit</button>
 	<a ui-sref="main">Back to All Posts</a>
 
 </div>

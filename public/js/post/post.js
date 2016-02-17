@@ -16,28 +16,58 @@ app.config(function($stateProvider) {
 				populated
 		*/
 	})
+	.state('edit', {
+		url: '/edit/:postId',
+		templateUrl: 'js/create/create.html',
+		controller: 'EditCtrl', 
+		resolve: {
+			postData: function($stateParams, Post) {
+				return Post.find($stateParams.postId); 
+			}
+		}
+	})
 });
 
-// add necessary dependencies 
-app.controller('PostCtrl', function($scope, postData, User) {
-	$scope.post = postData;
+app.controller('EditCtrl', function($scope, postData, User, Post) {
+	$scope.isEditing = true;
+
+	$scope.pageTitle = "Edit Post";
+
+	$scope.previewTrue = false;
+
+	$scope.preview = function() {
+		$scope.previewTrue = !$scope.previewTrue;
+	}
+
+	$scope.newPost = postData;
+
 	User.find(postData.author)
-	.then(function(author) {
-		$scope.post.author = author;
-	})
-	console.log($scope.post)
-
-	/* 1. FIND POST
-		use state params to retrieve the post id and attach post object to scope 
-		on controller load 
-	*/
+	.then(function(user) {
+		$scope.newPost.name = user.username;
+		console.log($scope.newPost);
+	});
 
 
-	/*
-		2. EDIT POST 
-		create a function that edits the post, adds an alert that the post has been 
-		successfully edited, and displays the edited post.  
+	$scope.editPost = function() {
+		Post.update({
+			title: $scope.newPost.title,
+			body: $scope.newPost.body,
+			author: postData.author
+		})
+		.then(function(post) {
+			post.go();
+		});
+	}
+})
 
-	*/
+// add necessary dependencies 
+app.controller('PostCtrl', function($scope, $state, postData, User) {
+	$scope.post = postData;
+
+	User.find(postData.author)
+	
+	$scope.edit = function() {
+		$state.go('edit', {postId: postData._id})
+	}
 
 })
