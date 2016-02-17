@@ -15,8 +15,8 @@ app.controller('SignupCtrl', function($scope, User, $state) {
     User.create({
       username: $scope.signup.username,
       password: $scope.signup.password
-    }).then(function() {
-      $state.go('create', { userId: $scope.signup.username });
+    }).then(function(user) {
+      $state.go('create', { userId: user._id });
     });
   };
 

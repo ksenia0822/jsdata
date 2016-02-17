@@ -7,19 +7,15 @@ app.config(function($stateProvider) {
 		controller: 'CreateCtrl',
 		resolve: {
 			author: function($stateParams) {
-				console.log('inside of create state\'s resolve ', $stateParams);
+				console.log($stateParams)
 				return $stateParams.userId || "";
 			}
 		}
-		/*
-				add a resolve block that has an author function which 
-				users $stateParams to retrieve the author object
-		*/
 	})
 })
 
 // add necessary dependencies here 
-app.controller('CreateCtrl', function($scope, author) {
+app.controller('CreateCtrl', function($scope, author, User, Post) {
 
 	$scope.previewTrue = false;
 
@@ -28,8 +24,20 @@ app.controller('CreateCtrl', function($scope, author) {
 	}
 	console.log('CreateCtrl received ', author)
 	if (!$scope.newPost) $scope.newPost = {};
-	$scope.newPost.name = author;
 
+	$scope.newPost.name = User.get(author).username;
+
+	$scope.addPost = function() {
+		console.log('Hello. We are going to add a new post')
+		Post.create({
+			title: $scope.newPost.title,
+			body: $scope.newPost.body,
+			author: author
+		})
+		.then(function(post) {
+			post.go();
+		});
+	}
 	/*
 
 	TODOS: 
